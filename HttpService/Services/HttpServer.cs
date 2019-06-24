@@ -25,7 +25,9 @@ namespace HttpService
             _backlog = backlog;
             controller = new CrudController();
         }
-
+        /// <summary>
+        /// Serves as a starting point in running the server
+        /// </summary>
         public void Execute()
         {
             try
@@ -54,6 +56,9 @@ namespace HttpService
             }
         }
 
+        /// <summary>
+        /// Initializes the socket
+        /// </summary>
         private void Initiate()
         {
             serverSocket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
@@ -63,6 +68,10 @@ namespace HttpService
         }
 
         #region Handlers
+        /// <summary>
+        /// Handles the acceptance of the connection from the client
+        /// </summary>
+        /// <param name="result"></param>
         private void HandleAccept(IAsyncResult result)
         {
             manualReset.Set();
@@ -72,7 +81,10 @@ namespace HttpService
             byte[] buffer = new byte[bufferSize];
             clientSocket.BeginReceive(buffer,0,bufferSize,0, new AsyncCallback(HandleReceive), new StateModel(clientSocket,buffer));
         }
-
+        /// <summary>
+        /// Handles the receiving of data from the client
+        /// </summary>
+        /// <param name="result"></param>
         private void HandleReceive(IAsyncResult result)
         {
             StateModel state = (StateModel) result.AsyncState;
@@ -94,6 +106,10 @@ namespace HttpService
             state.Connection.BeginSend(response, 0, response.Length, 0, new AsyncCallback(HandleResponse), state.Connection);
         }
 
+        /// <summary>
+        /// Handles the sending of the response for the client
+        /// </summary>
+        /// <param name="result"></param>
         private void HandleResponse(IAsyncResult result)
         {
             var client = (Socket)result.AsyncState;
@@ -102,6 +118,11 @@ namespace HttpService
         }
         #endregion
 
+        /// <summary>
+        /// Routes the control to controller class method which represents request type
+        /// </summary>
+        /// <param name="method">method name of the http request</param>
+        /// <returns>byte array which represents response for the client</returns>
         private byte[] RouteToController(string method)
         {
             byte[] response;

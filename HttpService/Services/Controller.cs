@@ -16,6 +16,10 @@ namespace HttpService
             _resourceLocation = Path.Join(Helper.GetProjectDirectory(), "Resources");
         }
 
+        /// <summary>
+        /// handler for Get request
+        /// </summary>
+        /// <returns></returns>
         public byte[] Get()
         {
             try
@@ -33,16 +37,28 @@ namespace HttpService
             }
         }
 
+        /// <summary>
+        /// handler for Put request
+        /// </summary>
+        /// <returns></returns>
         public byte[] Put()
         {
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// handler for Post request
+        /// </summary>
+        /// <returns></returns>
         public byte[] Post()
         {
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// handler for Delete request
+        /// </summary>
+        /// <returns></returns>
         public byte[] Delete()
         {
             throw new NotSupportedException();
