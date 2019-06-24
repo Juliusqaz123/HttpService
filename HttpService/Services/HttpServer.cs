@@ -10,7 +10,7 @@ namespace HttpService
     public class HttpServer : IHttpServer
     {
         private Socket serverSocket;
-        private readonly CrudController controller;
+        private readonly ICrudController controller;
 
         private static ManualResetEvent manualReset = new ManualResetEvent(false);
         private readonly int _backlog;
