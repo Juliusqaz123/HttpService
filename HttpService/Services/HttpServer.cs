@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Reflection;
 
 namespace HttpService
 {
     public class HttpServer : IHttpServer
     {
-        private Socket serverSocket;
-        private readonly ICrudController controller;
+        private Socket _serverSocket;
+        private readonly ICrudController _controller;
 
         private static ManualResetEvent manualReset = new ManualResetEvent(false);
         private readonly int _backlog;
@@ -23,7 +23,7 @@ namespace HttpService
 
             _port = port;
             _backlog = backlog;
-            controller = new CrudController();
+            _controller = new CrudController();
         }
         /// <summary>
         /// Serves as a starting point in running the server
@@ -46,7 +46,7 @@ namespace HttpService
                 try
                 {
                     manualReset.Reset();
-                    serverSocket.BeginAccept(new AsyncCallback(HandleAccept), serverSocket);
+                    _serverSocket.BeginAccept(new AsyncCallback(HandleAccept), _serverSocket);
                     manualReset.WaitOne();
                 }
                 catch(Exception e)
@@ -61,10 +61,10 @@ namespace HttpService
         /// </summary>
         private void Initiate()
         {
-            serverSocket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+            _serverSocket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry(_host).AddressList[0], _port);
-            serverSocket.Bind(endPoint);
-            serverSocket.Listen(_backlog);
+            _serverSocket.Bind(endPoint);
+            _serverSocket.Listen(_backlog);
         }
 
         #region Handlers
@@ -107,7 +107,7 @@ namespace HttpService
         }
 
         /// <summary>
-        /// Handles the sending of the response for the client
+        /// Handles the sending of the response for the clienta
         /// </summary>
         /// <param name="result"></param>
         private void HandleResponse(IAsyncResult result)
@@ -130,7 +130,7 @@ namespace HttpService
             {
                 Type thisType = typeof(CrudController);
                 MethodInfo requestType = thisType.GetMethod(method);
-                response = (byte[])requestType.Invoke(controller, null);
+                response = (byte[])requestType.Invoke(_controller, null);
             }
             catch(Exception)
             {
