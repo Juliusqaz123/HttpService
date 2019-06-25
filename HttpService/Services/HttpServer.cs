@@ -16,7 +16,7 @@ namespace HttpService
         private readonly int _backlog;
         private readonly int _port;
         private readonly string _host = "localhost";
-        private readonly string _notFoundResponse = @"HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 0\n";
+        private readonly string _notFoundResponseStatus = @"HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 0\n";
 
         public HttpServer(int port = 8080, int backlog = 100)
         {
@@ -128,13 +128,13 @@ namespace HttpService
             byte[] response;
             try
             {
-                Type thisType = typeof(CrudController);
-                MethodInfo requestType = thisType.GetMethod(method);
+                Type controllerType = typeof(CrudController);
+                MethodInfo requestType = controllerType.GetMethod(method);
                 response = (byte[])requestType.Invoke(_controller, null);
             }
             catch(Exception)
             {
-                response = Encoding.ASCII.GetBytes(_notFoundResponse);
+                response = Encoding.ASCII.GetBytes(_notFoundResponseStatus);
             }
 
             return response;

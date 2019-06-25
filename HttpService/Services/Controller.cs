@@ -7,9 +7,9 @@ namespace HttpService
     class CrudController : ICrudController
     {
         private readonly string _resourceLocation;
-        private readonly string _indexResponseHeader = @"HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: {0}\n";
-        private readonly string _errorResponse = @"HTTP/1.1 500 Internal Error\nContent-Type: text/plain\nContent-Length: 0\n";
-        private readonly string _index = "Index.html";
+        private readonly string _indexResponseStatus = @"HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: {0}\n";
+        private readonly string _errorResponseStatus = @"HTTP/1.1 500 Internal Error\nContent-Type: text/plain\nContent-Length: 0\n";
+        private readonly string _indexFileName = "Index.html";
 
         public CrudController()
         {
@@ -24,16 +24,16 @@ namespace HttpService
         {
             try
             {
-                var responseBody = File.ReadAllBytes(Path.Join(_resourceLocation, _index));
-                var responseHeaderString = String.Format(_indexResponseHeader, responseBody.Length);
-                byte[] responseHeaderBytes = Encoding.ASCII.GetBytes(responseHeaderString);
-                byte[] response = Helper.CombineByteArrays(responseHeaderBytes, responseBody);
-                return response;
+                var responseBodyBytes = File.ReadAllBytes(Path.Join(_resourceLocation, _indexFileName));
+                var responseStatusString = String.Format(_indexResponseStatus, responseBodyBytes.Length);
+                byte[] responseStatusBytes = Encoding.ASCII.GetBytes(responseStatusString);
+                byte[] responseFullBytes = Helper.CombineByteArrays(responseStatusBytes, responseBodyBytes);
+                return responseFullBytes;
             }
             catch
             {
-                byte[] response = Encoding.ASCII.GetBytes(_errorResponse);
-                return response;
+                byte[] responseFullBytes = Encoding.ASCII.GetBytes(_errorResponseStatus);
+                return responseFullBytes;
             }
         }
 
